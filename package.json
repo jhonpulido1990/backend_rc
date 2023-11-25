@@ -1,0 +1,25 @@
+{
+  "name": "backend_rc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhonpulido1990/backend_rc.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jhonpulido1990/backend_rc/issues"
+  },
+  "homepage": "https://github.com/jhonpulido1990/backend_rc#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1",
+    "pg": "^8.11.3"
+  }
+}
