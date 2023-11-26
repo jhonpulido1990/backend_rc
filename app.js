@@ -2,7 +2,7 @@ const express = require("express");
 const { Pool } = require("pg");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Configuração do pool de conexão com o PostgreSQL
 const pool = new Pool({
@@ -53,7 +53,7 @@ app.get("/api/productosDes", async (req, res) => {
 
 // lista do categorias
 
-app.get('api/listaCategorias', async (req, res) => {
+app.get('/api/listaCategorias', async (req, res) => {
   try {
     const result = await pool.query('SELECT categoria, subcategoria1, subcategoria2 FROM productos');
 
@@ -128,7 +128,7 @@ app.get("/api/categorias", async (req, res) => {
 
 // pesquisa por produto pela id
 
-app.get('/api/productos/:id', async (req, res) => {
+app.get('/api/productosId/:id', async (req, res) => {
   const productId = req.params.id;
 
   try {
@@ -186,7 +186,7 @@ app.post('/api/newprodutos', async (req, res) => {
     const { nombre, descripcion, imagen, categoria, subcategoria1, subcategoria2 } = req.body;
 
     const result = await pool.query(
-      'INSERT INTO produtos (nombre, descripcion, imagen, categoria, subcategoria1, subcategoria2) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      'INSERT INTO productos (nombre, descripcion, imagen, categoria, subcategoria1, subcategoria2) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
       [nombre, descripcion, imagen, categoria, subcategoria1, subcategoria2]
     );
 
@@ -204,7 +204,7 @@ app.put('/api/updateprodutos/:id', async (req, res) => {
     const { nombre, descripcion, imagen, categoria, subcategoria1, subcategoria2 } = req.body;
 
     const result = await pool.query(
-      'UPDATE produtos SET nombre = $1, descripcion = $2, imagen = $3, categoria = $4, subcategoria1 = $5, subcategoria2 = $6 WHERE id = $7 RETURNING *',
+      'UPDATE productos SET nombre = $1, descripcion = $2, imagen = $3, categoria = $4, subcategoria1 = $5, subcategoria2 = $6 WHERE id = $7 RETURNING *',
       [nombre, descripcion, imagen, categoria, subcategoria1, subcategoria2, id]
     );
 
@@ -224,7 +224,7 @@ app.delete('/api/deleteprodutos/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
-    const result = await pool.query('DELETE FROM produtos WHERE id = $1 RETURNING *', [id]);
+    const result = await pool.query('DELETE FROM productos WHERE id = $1 RETURNING *', [id]);
 
     if (result.rows.length === 0) {
       res.status(404).json({ error: 'Produto não encontrado' });
@@ -242,4 +242,3 @@ app.delete('/api/deleteprodutos/:id', async (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
 });
-
