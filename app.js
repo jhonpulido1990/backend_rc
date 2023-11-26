@@ -16,6 +16,7 @@ const pool = new Pool({
         }
 });
 
+// Middleware para processar requisições JSON
 app.use(express.json());
 
 pool.connect((error) => {
@@ -178,6 +179,64 @@ app.get('/api/productos', async (req, res) => {
     res.status(500).send('Erro interno do servidor');
   }
 });
+
+// Rota para criar um novo produto
+app.post('/api/newprodutos', async (req, res) => {
+  try {
+    const { nombre, descripcion, imagen, categoria, subcategoria1, subcategoria2 } = req.body;
+
+    const result = await pool.query(
+      'INSERT INTO produtos (nombre, descripcion, imagen, categoria, subcategoria1, subcategoria2) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [nombre, descripcion, imagen, categoria, subcategoria1, subcategoria2]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Erro ao criar um novo produto:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
+// Rota para atualizar um produto pelo ID
+app.put('/api/updateprodutos/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nombre, descripcion, imagen, categoria, subcategoria1, subcategoria2 } = req.body;
+
+    const result = await pool.query(
+      'UPDATE produtos SET nombre = $1, descripcion = $2, imagen = $3, categoria = $4, subcategoria1 = $5, subcategoria2 = $6 WHERE id = $7 RETURNING *',
+      [nombre, descripcion, imagen, categoria, subcategoria1, subcategoria2, id]
+    );
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ error: 'Produto não encontrado' });
+    } else {
+      res.json(result.rows[0]);
+    }
+  } catch (error) {
+    console.error('Erro ao atualizar o produto:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
+// Rota para excluir um produto pelo ID
+app.delete('/api/deleteprodutos/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await pool.query('DELETE FROM produtos WHERE id = $1 RETURNING *', [id]);
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ error: 'Produto não encontrado' });
+    } else {
+      res.json({ message: 'Produto excluído com sucesso' });
+    }
+  } catch (error) {
+    console.error('Erro ao excluir o produto:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
 
 // Inicia o servidor
 app.listen(port, () => {
