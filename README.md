@@ -19,31 +19,31 @@ Crie um banco de dados PostgreSQL e ajuste as configurações de conexão no arq
 
 ### Listar produtos em ordem ascendente
 
-GET /api/productosAs
+GET http://3.133.167.240:3000/api/productosAs
 
 ### Listar produtos em ordem descendente
 
-GET /api/productosDes
+GET http://3.133.167.240:3000/api/productosDes
 
 ## Listar Categorias
 
-GET /api/listaCategorias
+GET http://3.133.167.240:3000/api/listaCategorias
 
 ## Listar Produtos por Categoria
 
-GET /api/categorias
+GET http://3.133.167.240:3000/api/categorias
 
 ## Pesquisar Produto por ID
 
-GET /api/productos/:id
+GET http://3.133.167.240:3000/api/productos/:id
 
 ## Listar Produtos com Filtros e Paginação
 
-GET /api/productos?categoria=exemplo&subcategoria1=exemplo1&subcategoria2=exemplo2&page=1&limit=10
+GET http://3.133.167.240:3000/api/productos?categoria=exemplo&subcategoria1=exemplo1&subcategoria2=exemplo2&page=1&limit=10
 
 ## Criar um Novo Produto
 
-POST /api/newprodutos
+POST http://3.133.167.240:3000/api/newprodutos
 
 {
   "nombre": "Produto Novo",
@@ -56,7 +56,7 @@ POST /api/newprodutos
 
 ## Atualizar um Produto por ID
 
-PUT /api/updateprodutos/:id
+PUT http://3.133.167.240:3000/api/updateprodutos/:id
 
 {
   "nombre": "Produto Atualizado",
@@ -69,4 +69,4 @@ PUT /api/updateprodutos/:id
 
 ## Excluir um Produto por ID
 
-DELETE /api/deleteprodutos/:id
+DELETE http://3.133.167.240:3000/api/deleteprodutos/:id
