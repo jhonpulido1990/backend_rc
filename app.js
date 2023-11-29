@@ -72,12 +72,18 @@ app.get('/api/listaCategorias', async (req, res) => {
       }
 
       if (!listaCategorias[categoria][subcategoria1]) {
-        listaCategorias[categoria][subcategoria1] = [];
+        listaCategorias[categoria][subcategoria1] = {};
       }
 
-      // Adiciona subcategoria2 apenas se não estiver presente
-      if (!listaCategorias[categoria][subcategoria1].includes(subcategoria2)) {
-        listaCategorias[categoria][subcategoria1].push(subcategoria2);
+      if (!listaCategorias[categoria][subcategoria1][subcategoria2]) {
+        listaCategorias[categoria][subcategoria1][subcategoria2] = [];
+      }
+
+      // Adiciona valores específicos se não estiverem presentes
+      // Aqui você pode adicionar lógica para adicionar valores específicos se necessário
+      // Por enquanto, estamos apenas adicionando subcategoria2 se não estiver presente
+      if (!listaCategorias[categoria][subcategoria1][subcategoria2].includes(subcategoria2)) {
+        listaCategorias[categoria][subcategoria1][subcategoria2].push(subcategoria2);
       }
     });
 
@@ -87,6 +93,7 @@ app.get('/api/listaCategorias', async (req, res) => {
     res.status(500).send('Erro interno do servidor');
   }
 });
+
 
 // categorias e um produto
 app.get("/api/categorias", async (req, res) => {
@@ -104,30 +111,6 @@ app.get("/api/categorias", async (req, res) => {
     res.status(500).send("Erro interno do servidor");
   }
 });
-
-// categorias e um produto
-/* app.get('/api/produtosPorCategoria', async (req, res) => {
-  try {
-    const query = `
-      SELECT categoria, 
-             MIN(id) AS id,
-             MIN(nombre) AS nombre,
-             MIN(descripcion) AS descripcion,
-             MIN(imagen) AS imagen,
-             MIN(subcategoria1) AS subcategoria1,
-             MIN(subcategoria2) AS subcategoria2
-      FROM productos
-      GROUP BY categoria;
-    `;
-
-    const result = await pool.query(query);
-
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Erro ao obter dados do banco de dados', error);
-    res.status(500).send('Erro interno do servidor');
-  }
-}); */
 
 // pesquisa por produto pela id
 
@@ -148,35 +131,74 @@ app.get('/api/productosId/:id', async (req, res) => {
   }
 });
 
-// Rota para obter produtos com paginação e filtros
+// Rota para obter produtos com paginação, filtros e total de produtos
+
 app.get('/api/productos', async (req, res) => {
   try {
     const { categoria, subcategoria1, subcategoria2, page = 1, limit = 10 } = req.query;
 
-    let query = 'SELECT * FROM productos WHERE 1=1';
+    let dataQuery = 'SELECT * FROM productos WHERE 1=1';
+    let countQuery = 'SELECT COUNT(*) FROM productos';
+
     const values = [];
 
     if (categoria) {
-      query += ' AND categoria = $1';
+      dataQuery += ' AND categoria = $1';
+      countQuery += ' WHERE categoria = $1';
       values.push(categoria);
     }
 
     if (subcategoria1) {
-      query += ' AND subcategoria1 = $2';
+      dataQuery += ' AND subcategoria1 = $2';
+      countQuery += countQuery.includes('WHERE') ? ' AND subcategoria1 = $2' : ' WHERE subcategoria1 = $2';
       values.push(subcategoria1);
     }
 
     if (subcategoria2) {
-      query += ' AND subcategoria2 = $3';
+      dataQuery += ' AND subcategoria2 = $3';
+      countQuery += countQuery.includes('WHERE') ? ' AND subcategoria2 = $3' : ' WHERE subcategoria2 = $3';
       values.push(subcategoria2);
     }
 
     const offset = (page - 1) * limit;
 
-    const result = await pool.query(query + ` OFFSET $${values.length + 1} LIMIT $${values.length + 2}`, [...values, offset, limit]);
-    const produtos = result.rows;
+    // Consulta para obter dados paginados
+    const dataResult = await pool.query(dataQuery + ` OFFSET $${values.length + 1} LIMIT $${values.length + 2}`, [...values, offset, limit]);
+    const produtos = dataResult.rows;
 
-    res.json(produtos);
+    // Consulta para obter o número total de registros
+    const countResult = await pool.query(countQuery, values);
+    const totalRecords = countResult.rows[0].count;
+
+    res.json({ produtos, totalRecords });
+  } catch (error) {
+    console.error('Erro na consulta:', error);
+    res.status(500).send('Erro interno do servidor');
+  }
+});
+
+// filtro para categoria e nombre
+app.get('/api/filtroProducto', async (req, res) => {
+  try {
+    const { termoPesquisa, page = 1, limit = 10 } = req.query;
+
+    const query = `
+      SELECT *, 
+      COUNT(*) OVER() AS totalRecords
+      FROM productos 
+      WHERE 
+        categoria ILIKE $1 OR
+        nombre ILIKE $2
+      OFFSET $3 LIMIT $4
+    `;
+
+    const offset = (page - 1) * limit;
+
+    const result = await pool.query(query, [`%${termoPesquisa}%`, `%${termoPesquisa}%`, offset, limit]);
+    const produtos = result.rows;
+    const totalRecords = result.rows.length > 0 ? result.rows[0].totalrecords : 0;
+
+    res.json({ produtos, totalRecords });
   } catch (error) {
     console.error('Erro na consulta:', error);
     res.status(500).send('Erro interno do servidor');
