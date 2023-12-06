@@ -5,14 +5,14 @@ Características:
 Largo: 3,90 m
 Ancho: 2,10 m
 Profundidad: 1 m
-Volumen: 4594 lts','<https://www.hidrosol.com.ar/uploads/s_0_852.jpg','PISCINAS DE FIBRA','CASCOS','LINEA DOBLE BANCO'),
+Volumen: 4594 lts','https://www.hidrosol.com.ar/uploads/s_0_852.jpg','PISCINAS DE FIBRA','CASCOS','LINEA DOBLE BANCO'),
 ('Pileta FV Doble Banco Mod. 360','Estos modelos se adaptan a diferentes espacios ya sean abiertos o cubiertos, con la posibilidad de acondicionarlos como spa, esta línea es ideal para realizar ejercicios aeróbicos en forma vertical o rehabilitaciones.
 
 Características:
 Largo: 3,60m
 Ancho: 2 m
 Profundidad: 0,90 m
-Volumen: 3653 Lts','<https://www.hidrosol.com.ar/uploads/s_0_11c.jpg','PISCINAS DE FIBRA','CASCOS','LINEA DOBLE BANCO'),
+Volumen: 3653 Lts','https://www.hidrosol.com.ar/uploads/s_0_11c.jpg','PISCINAS DE FIBRA','CASCOS','LINEA DOBLE BANCO'),
 ('Pileta FV Banco y Escalera Mod. 590','Esta piscina cuenta con un banco que permite el relax dentro del agua, es especial para aprovecharla en diferentes espacios ya que no tiene escaleras grandes. Su forma ovalada se conjuga bien con todos los terrenos porque no corta paisajes.
 
 Este modelo permite el uso del banco y la escalera al mismo tiempo dando lugar a diferentes actividades dentro de la pileta. El amplio banco, permite incorporar hidromasaje, o colchón de burbujas. Su estructura elíptica se encuentra completamente libre de obstrucciones y sus escaleras están diseñadas para maximizar el espacio interior de la pileta.
@@ -21,7 +21,7 @@ Características:
 Largo: 5,85 m
 Ancho: 2,80 m
 Profundidad: 1,40 m
-Volumen: 13910 lts','<https://www.hidrosol.com.ar/uploads/s_0_be590s.png','PISCINAS DE FIBRA','CASCOS','LINEA DOBLE BANCO Y ESCALERA'),
+Volumen: 13910 lts','https://www.hidrosol.com.ar/uploads/s_0_be590s.png','PISCINAS DE FIBRA','CASCOS','LINEA DOBLE BANCO Y ESCALERA'),
 ('Pileta FV Banco y Escalera Mod. 390','Esta piscina cuenta con un banco que permite el relax dentro del agua, es especial para aprovecharla en diferentes espacios ya que no tiene escaleras grandes. Su forma ovalada se conjuga bien con todos los terrenos porque no corta paisajes.
  
 Este modelo permite el uso del banco y la escalera al mismo tiempo dando lugar a diferentes actividades dentro de la pileta. El amplio banco, permite incorporar hidromasaje, o colchón de burbujas. Su estructura elíptica se encuentra completamente libre de obstrucciones y sus escaleras están diseñadas para maximizar el espacio interior de la pileta.
