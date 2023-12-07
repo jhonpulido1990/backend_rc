@@ -103,8 +103,26 @@ function checkToken(req, res, next) {
 }
 
 // Exemplo de uso em uma rota protegida
-router.get('/rotaProtegida', verifyToken, (req, res) => {
-  res.json({ success: true, message: 'Rota protegida alcançada', userId: req.userId });
+router.get('/rotaProtegida', verifyToken, async (req, res) => {
+  try {
+    // Aqui você pode buscar as informações adicionais (nombre, correo, fecha) no banco de dados
+    // ou de qualquer outra fonte, com base no req.userId ou em alguma lógica específica.
+
+    const { nombre, correo, data_user } = await obterInformacoesAdicionais(req.userId);
+
+    // Agora você pode incluir essas informações na resposta
+    res.json({
+      success: true,
+      message: 'Rota protegida alcançada',
+      userId: req.userId,
+      nombre,
+      correo,
+      data_user,
+    });
+  } catch (error) {
+    console.error('Erro ao obter informações adicionais:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
 });
 
 function renewToken(userId, chaveSecreta) {
@@ -114,6 +132,29 @@ function renewToken(userId, chaveSecreta) {
     chaveSecreta
   );
   return token;
+}
+
+async function obterInformacoesAdicionais(userId) {
+  // Implemente a lógica para obter informações adicionais do usuário com base no userId.
+  // Por exemplo, você pode usar seu pool de conexão do PostgreSQL para fazer uma consulta.
+
+  // Exemplo usando o pool de conexão que você configurou
+  const client = await pool.connect();
+
+  try {
+    const result = await client.query('SELECT nombre, correo, data_user FROM data_user WHERE id_user = $1', [userId]);
+
+    if (result.rows.length > 0) {
+      return result.rows[0];
+    } else {
+      throw new Error('Usuário não encontrado');
+    }
+  } catch (error) {
+    console.error('Erro ao obter informações adicionais do usuário:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 module.exports = router;
