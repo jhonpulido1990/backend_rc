@@ -56,9 +56,9 @@ router.post("/login", async (req, res) => {
     }
 
     const userId = userResult.rows[0].id_user;
-    const token = generateToken(userId, chaveSecreta);
+    const token = renewToken(userId, chaveSecreta);
 
-    res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
+    res.cookie("token", token, { maxAge: 1200000, httpOnly: true }); // Atualiza o tempo máximo do cookie para 20 minutos
 
     res.json({ success: true, token });
   } catch (error) {
@@ -67,39 +67,53 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/rotaProtegida", verifyToken, (req, res) => {
-  const userId = req.userId;
-  res.json({ message: "Rota protegida acessada com sucesso", userId });
-});
-
-function generateToken(userId, chaveSecreta) {
-  const expiresIn = 3600;
-  const token = jwt.sign(
-    { userId, exp: Math.floor(Date.now() / 1000) + expiresIn },
-    chaveSecreta
-  );
-  return token;
-}
-
 function verifyToken(req, res, next) {
-  if (!req.cookies || !req.cookies.token) {
-    return res.status(401).json({ message: "Token não fornecido" });
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ success: false, message: 'Token ausente' });
   }
 
-  const token = req.cookies.token;
-
-  jwt.verify(token, "suaChaveSecreta", (err, decoded) => {
+  jwt.verify(token.split(' ')[1], chaveSecreta, (err, decoded) => {
     if (err) {
-      return res.status(401).json({ message: "Token inválido" });
-    }
-
-    if (Date.now() >= decoded.exp * 1000) {
-      return res.status(401).json({ message: "Token expirado" });
+      return res.status(401).json({ success: false, message: 'Token inválido' });
     }
 
     req.userId = decoded.userId;
     next();
   });
+}
+
+// Middleware para verificar o token
+function checkToken(req, res, next) {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ success: false, message: 'Token ausente' });
+  }
+
+  jwt.verify(token, chaveSecreta, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ success: false, message: 'Token inválido' });
+    }
+
+    req.userId = decoded.userId;
+    next();
+  });
+}
+
+// Exemplo de uso em uma rota protegida
+router.get('/rotaProtegida', verifyToken, (req, res) => {
+  res.json({ success: true, message: 'Rota protegida alcançada', userId: req.userId });
+});
+
+function renewToken(userId, chaveSecreta) {
+  const expiresIn = 1200; // 20 minutos em segundos
+  const token = jwt.sign(
+    { userId, exp: Math.floor(Date.now() / 1000) + expiresIn },
+    chaveSecreta
+  );
+  return token;
 }
 
 module.exports = router;
