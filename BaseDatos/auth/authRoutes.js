@@ -9,14 +9,7 @@ const chaveSecreta = "suaChaveSecreta";
 const router = express.Router();
 
 const pool = new Pool({
-  user: "postgres",
-  host: "rc-piscina.co5uocrswzze.us-east-2.rds.amazonaws.com",
-  database: "rcpiscina",
-  password: "root1234",
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  connectionString: process.env.DATABASE_URL
 });
 
 router.post("/newuser", async (req, res) => {

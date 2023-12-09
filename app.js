@@ -17,14 +17,7 @@ app.use(express.json()); // Middleware para processar requisições JSON
 
 // Configuração do pool de conexão com o PostgreSQL
 const pool = new Pool({
-  user: "fl0user",
-  host: "ep-billowing-mud-53311513.ap-southeast-1.aws.neon.fl0.io",
-  database: "database",
-  password: "d0vk4slbujrn",
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  connectionString: process.env.DATABASE_URL
 });
 
 app.set("pool", pool);
