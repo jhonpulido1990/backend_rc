@@ -17,10 +17,10 @@ app.use(express.json()); // Middleware para processar requisições JSON
 
 // Configuração do pool de conexão com o PostgreSQL
 const pool = new Pool({
-  user: "postgres",
-  host: "rc-piscina.co5uocrswzze.us-east-2.rds.amazonaws.com",
-  database: "rcpiscina",
-  password: "root1234",
+  user: "fl0user",
+  host: "ep-billowing-mud-53311513.ap-southeast-1.aws.neon.fl0.io",
+  database: "database",
+  password: "d0vk4slbujrn",
   port: 5432,
   ssl: {
     rejectUnauthorized: false,
